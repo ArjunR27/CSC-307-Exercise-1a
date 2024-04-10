@@ -51,6 +51,17 @@ const addUser = (user) => {
   return user;
 };
 
+const deleteUser = (id) => {
+  const indexToDelete = users["users_list"].findIndex(user => user.id === id);
+  console.log(indexToDelete)
+  if (indexToDelete != -1) {
+    users["users_list"].splice(indexToDelete, 1)
+    return true;
+  } else {
+    return false; 
+  }
+};
+
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
@@ -81,6 +92,16 @@ app.post("/users", (req, res) => {
   const userToAdd = req.body;
   addUser(userToAdd);
   res.send();
+});
+
+app.delete("/users/:id", (req, res) => {
+  const id = req.params["id"]
+  let result = deleteUser(id);
+  if (result) {
+    res.send("User deleted successfully")
+  } else {
+    res.status(404).send("Resource not found")
+  }
 });
 
 app.listen(port, () => {
