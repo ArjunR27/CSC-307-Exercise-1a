@@ -33,7 +33,7 @@ const users = {
       }
     ]
   };
-  
+
 app.use(cors());
 app.use(express.json());
 
@@ -70,6 +70,11 @@ const deleteUser = (id) => {
   }
 };
 
+const generateID = () => {
+  const id = (Math.random() * 1000).toFixed(0)
+  return id
+}
+
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
@@ -102,9 +107,12 @@ app.get("/users/:id", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
-  const userToAdd = req.body;
+  const id = generateID()
+  const userToAdd = { id, ...req.body }
   addUser(userToAdd);
-  res.send();
+  res.status(201).send()
+  console.log(res.statusCode)
+
 });
 
 app.delete("/users/:id", (req, res) => {
