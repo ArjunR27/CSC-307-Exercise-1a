@@ -8,6 +8,7 @@ function TableHeader() {
           <th>Name</th>
           <th>Job</th>
           <th>Remove</th>
+          <th>ID</th>
         </tr>
       </thead>
     );
@@ -24,6 +25,7 @@ function TableHeader() {
                         Delete
                     </button>
                 </td>
+                <td>{row.id}</td>
             </tr>
         );
     }

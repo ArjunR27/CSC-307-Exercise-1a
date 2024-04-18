@@ -119,7 +119,7 @@ app.delete("/users/:id", (req, res) => {
   const id = req.params["id"]
   let result = deleteUser(id);
   if (result) {
-    res.send("User deleted successfully")
+    res.status(204).send("User deleted successfully")
   } else {
     res.status(404).send("Resource not found")
   }

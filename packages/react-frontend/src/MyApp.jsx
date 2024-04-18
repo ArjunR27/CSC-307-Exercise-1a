@@ -11,15 +11,32 @@ function MyApp() {
       .then((res) => res.json())
       .then((json) => setCharacters(json["users_list"]))
       .catch((error) => { console.log(error); });
-    }, [] ); 
+    }, [] );
 
     function removeOneCharacter(index)
+    {
+      const idToDelete = characters[index].id
+      fetch(`http://localhost:8000/users/${idToDelete}`, {
+        method: "DELETE"
+      })
+      .then((response) => {
+        if(response.status === 204) {
+          const updatedCharacters = characters.filter((character, i) => i !== index);
+          setCharacters(updatedCharacters);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting character: ", error); 
+      }); 
+    }
+    
+    /*function removeOneCharacter(index)
     {
         const updated = characters.filter((character, i) => {
             return i !== index;
         });
         setCharacters(updated);
-    }
+    }*/
 
   return (
     <div className="container">
