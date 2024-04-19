@@ -30,13 +30,6 @@ function MyApp() {
       }); 
     }
     
-    /*function removeOneCharacter(index)
-    {
-        const updated = characters.filter((character, i) => {
-            return i !== index;
-        });
-        setCharacters(updated);
-    }*/
 
   return (
     <div className="container">
@@ -48,12 +41,15 @@ function MyApp() {
     </div>
   );
 
-  function updateList(person) {
+  function updateList(person) {    
     postUser(person)
     .then((response) => {
       if (response.status === 201)
       {
-        setCharacters([...characters, person])
+        response.json()
+        .then((updatedPerson) => {
+          setCharacters([...characters, updatedPerson])
+        })     
       }
     })
     .catch((error) => {

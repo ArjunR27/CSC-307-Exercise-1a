@@ -110,8 +110,7 @@ app.post("/users", (req, res) => {
   const id = generateID()
   const userToAdd = { id, ...req.body }
   addUser(userToAdd);
-  res.status(201).send()
-  console.log(res.statusCode)
+  res.status(201).send(userToAdd)
 
 });
 
