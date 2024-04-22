@@ -1,7 +1,7 @@
 {
   "name": "csc-307-app-1",
   "version": "1.0.0",
-  "description": "",
+  "description": "Exercise 1A for CSC-307 - Arjun Ranade",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,5 +11,8 @@
   "license": "ISC",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "mongoose": "^8.3.2"
+  }
 }

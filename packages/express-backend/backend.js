@@ -1,8 +1,12 @@
 import express from "express"
 import cors from "cors";
+import userServices from "./user-services.js";
+import bodyParser from "body-parser"
+
 
 const app = express();
 const port = 8000
+app.use(bodyParser.json())
 
 const users = {
     users_list: [
@@ -39,7 +43,7 @@ app.use(express.json());
 
 
 
-const findUserByName = (name) => {
+/*const findUserByName = (name) => {
   return users["users_list"].filter(
     (user) => (user["name"] === name)
   );
@@ -73,55 +77,56 @@ const deleteUser = (id) => {
 const generateID = () => {
   const id = (Math.random() * 1000).toFixed(0)
   return id
-}
+} */
 
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
-app.get("/users", (req, res) => {
-  const name = req.query.name;
-  const job = req.query.job; 
-  if (name != undefined && job != undefined) {
-    let result = findUserByNameAndJob(name, job);
-    result = { users_list: result };
-    res.send(result)
-  } else if (name != undefined) {
-    let result = findUserByName(name);
-    result = { users_list: result };
-    res.send(result);
-  } else {
-    res.send(users);
+app.get("/users", async (req, res) => {
+  const name = req.query["name"];
+  const job = req.query["job"];
+  if (name != undefined & job != undefined) {
+    const result = await userServices.findUserByNameAndJob(name, job);
+    res.send({ users_list: result });
+  }
+  else {
+    const result = await userServices.getUsers(name, job);
+    res.send({ users_list: result})
   }
 });
 
-app.get("/users/:id", (req, res) => {
+app.get("/users/:id", async (req, res) => {
   const id = req.params["id"];
-  let result = findUserById(id);
-  if (result == undefined) {
+  const result = await userServices.findUserById(id);
+  if (result === undefined || result === null)
     res.status(404).send("Resource not found.");
-  } else {
-    res.send(result);
+  else {
+    res.send({ users_list: result });
   }
 });
 
-app.post("/users", (req, res) => {
-  const id = generateID()
-  const userToAdd = { id, ...req.body }
-  addUser(userToAdd);
-  res.status(201).send(userToAdd)
-
+app.post("/users", async (req, res) => {
+  const user = req.body;
+  const savedUser = await userServices.addUser(user);
+  if (savedUser) res.status(201).send(savedUser);
+  else res.status(500).end();
 });
 
-app.delete("/users/:id", (req, res) => {
-  const id = req.params["id"]
-  let result = deleteUser(id);
+app.delete("/users/:id", async (req, res) => {
+  const id = req.params.id
+  console.log(id)
+  try {
+  const result = await userServices.deleteUser(id);
   if (result) {
-    res.status(204).send("User deleted successfully")
-  } else {
-    res.status(404).send("Resource not found")
+    res.status(204).send("User deleted successfully");
   }
+  } catch (error) {
+    console.error(error);
+    res.status(404).send("Resource not found");
+  }
+  
 });
 
 app.listen(port, () => {
